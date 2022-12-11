@@ -1,4 +1,4 @@
-package com.example.tripify1
+package com.example.gtk_flutter
 
 import io.flutter.embedding.android.FlutterActivity
 

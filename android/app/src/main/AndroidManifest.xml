@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.tripify1">
+    package="com.example.gtk_flutter">
    <application
-        android:label="tripify1"
+        android:label="gtk_flutter"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
