@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:gtk_flutter/main.dart';
 import 'package:lottie/lottie.dart';
 import 'package:gtk_flutter/screens/locationPage.dart';
 
@@ -18,7 +17,7 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: Duration(seconds: (5)),
+      duration: Duration(seconds: (10)),
       vsync: this,
     );
   }
@@ -36,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen>
             ..duration = composition.duration
             ..forward().whenComplete(() => Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => LocationPage()),
+                  MaterialPageRoute(builder: (context) => GetUserLocation()),
                 ));
         },
       ),
