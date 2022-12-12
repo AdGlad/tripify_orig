@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gtk_flutter/screens/homePage.dart';
 import 'package:lottie/lottie.dart';
-import 'package:gtk_flutter/screens/locationPage.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -35,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen>
             ..duration = composition.duration
             ..forward().whenComplete(() => Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => GetUserLocation()),
+                  MaterialPageRoute(builder: (context) => HomePage()),
                 ));
         },
       ),

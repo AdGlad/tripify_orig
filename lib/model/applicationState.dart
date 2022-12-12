@@ -65,6 +65,19 @@ class ApplicationState extends ChangeNotifier {
     }
   }
 
+  Future<DocumentReference> addMessageToTrip(String message) {
+    if (!_loggedIn) {
+      throw Exception('Must be logged in');
+    }
+
+    return FirebaseFirestore.instance.collection('trip').add(<String, dynamic>{
+      'text': message,
+      'timestamp': DateTime.now().millisecondsSinceEpoch,
+      'name': FirebaseAuth.instance.currentUser!.displayName,
+      'userId': FirebaseAuth.instance.currentUser!.uid,
+    });
+  }
+
   Future<DocumentReference> addMessageToGuestBook(String message) {
     if (!_loggedIn) {
       throw Exception('Must be logged in');
@@ -144,14 +157,13 @@ class ApplicationState extends ChangeNotifier {
     });
   }
 
-Future<void> refreshLoggedInUser() async {
-  final currentUser = FirebaseAuth.instance.currentUser;
+  Future<void> refreshLoggedInUser() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
 
-  if (currentUser == null) {
-    return;
+    if (currentUser == null) {
+      return;
+    }
+
+    await currentUser.reload();
   }
-
-  await currentUser.reload();
-}
-
 }

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 //import 'package:gtk_flutter/model/locationData.dart';
 import 'package:location/location.dart';
@@ -88,6 +90,7 @@ class _GetUserLocationState extends State<GetUserLocation> {
     Address address =
         await geoCode.reverseGeocoding(latitude: lat, longitude: lang);
     // return "${address.streetAddress}, ${address.city}, ${address.countryName}, ${address.postal}";
+    
     return " ${address.countryName}";
   }
 }

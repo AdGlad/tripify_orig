@@ -98,7 +98,7 @@ class App extends StatelessWidget {
           );
         })
       },
-      title: 'Firebase Meetup',
+      title: 'Tripify',
       theme: ThemeData(
         buttonTheme: Theme.of(context).buttonTheme.copyWith(
               highlightColor: Colors.deepPurple,
