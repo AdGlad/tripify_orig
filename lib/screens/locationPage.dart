@@ -27,8 +27,8 @@ class _GetUserLocationState extends State<GetUserLocation> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              //if (currentLocation != null)
-              //Text("Location: ${currentLocation?.latitude}, ${currentLocation?.longitude}"),
+              if (currentLocation != null)
+              Text("Location: ${currentLocation?.latitude}, ${currentLocation?.longitude}"),
               if (currentLocation != null) Text("$address"),
               MaterialButton(
                 onPressed: () {
@@ -39,6 +39,8 @@ class _GetUserLocationState extends State<GetUserLocation> {
                       setState(() {
                         currentLocation = location;
                         address = value;
+                       // await widget.addLocation(address);
+
                       });
                     });
                   });

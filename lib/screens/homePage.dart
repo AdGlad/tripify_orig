@@ -79,6 +79,10 @@ class HomePage extends StatelessWidget {
                         appState.addMessageToGuestBook(message),
                     messages: appState.guestBookMessages,
                   ),
+                  //GetUserLocation(
+                  //  addMessage: (message) => appState.addMessageToTrip(message),
+                  //  //messages: appState.guestBookMessages,
+                  //),
                 ],
               ],
             ),
