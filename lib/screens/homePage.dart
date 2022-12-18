@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gtk_flutter/model/yesNoSelect.dart';
 import 'package:gtk_flutter/screens/guestBook.dart';
+import 'package:gtk_flutter/screens/locationList.dart';
 import 'package:gtk_flutter/screens/locationPage.dart';
 import 'package:gtk_flutter/src/authentication.dart';
 import 'package:gtk_flutter/src/widgets.dart';
@@ -21,11 +22,18 @@ class HomePage extends StatelessWidget {
       body: ListView(
         children: <Widget>[
           ElevatedButton(
-            child: const Text('Fetch Location'),
+            child: const Text('Fetch Location 1'),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => GetUserLocation()),
+                MaterialPageRoute(
+                    builder: (context) => Consumer<ApplicationState>(
+                        builder: (context, appState, _) => GetUserLocation(
+                              currentaddress: appState.currentaddress,
+                              addMessage: (message) =>
+                                  appState.addMessageToLocationList(message),
+                              messages: appState.locationListMessages,
+                            ))),
               );
             },
           ),
@@ -79,10 +87,12 @@ class HomePage extends StatelessWidget {
                         appState.addMessageToGuestBook(message),
                     messages: appState.guestBookMessages,
                   ),
-                  //GetUserLocation(
-                  //  addMessage: (message) => appState.addMessageToTrip(message),
-                  //  //messages: appState.guestBookMessages,
-                  //),
+                  const Header('Location'),
+                  LocationList(
+                    addMessage: (message) =>
+                        appState.addMessageToLocationList(message),
+                    messages: appState.locationListMessages,
+                  ),
                 ],
               ],
             ),

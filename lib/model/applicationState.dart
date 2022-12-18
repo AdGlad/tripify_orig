@@ -10,12 +10,37 @@ import 'package:flutter/material.dart';
 import 'package:gtk_flutter/firebase_options.dart';
 import 'package:gtk_flutter/model/attending.dart';
 import 'package:gtk_flutter/model/guestBook.dart';
+import 'package:gtk_flutter/model/locationList.dart';
 //import '../firebase_options.dart';
 //import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 
 class ApplicationState extends ChangeNotifier {
   ApplicationState() {
     init();
+  }
+  String? latitude;
+  String? longitude;
+  var _countryName = "Spain";
+
+//String setCountry(latitude, longitude) {
+//    countryName = "France";
+//    this.latitude = latitude;
+//    this.longitude = longitude;
+//
+//    return countryName;
+//  }
+
+  String get getCountry {
+    //countryName = "France";
+    //this.latitude = latitude;
+    //this.longitude = longitude;
+
+    return _countryName;
+  }
+
+  void getCurrentLocation(latitude, longitude) {
+    _countryName = "Sweden";
+    notifyListeners();
   }
 
   bool _loggedIn = false;
@@ -28,8 +53,13 @@ class ApplicationState extends ChangeNotifier {
   List<GuestBookMessage> _guestBookMessages = [];
   List<GuestBookMessage> get guestBookMessages => _guestBookMessages;
 
+  StreamSubscription<QuerySnapshot>? _locationListSubscription;
+  List<LocationListMessage> _locationListMessages = [];
+  List<LocationListMessage> get locationListMessages => _locationListMessages;
+
   int _attendees = 0;
   int get attendees => _attendees;
+  String currentaddress = "no address";
 
   static Map<String, dynamic> defaultValues = <String, dynamic>{
     'event_date': 'October 18, 2022',
@@ -78,6 +108,21 @@ class ApplicationState extends ChangeNotifier {
     });
   }
 
+  Future<DocumentReference> addMessageToLocationList(String message) {
+    if (!_loggedIn) {
+      throw Exception('Must be logged in');
+    }
+
+    return FirebaseFirestore.instance
+        .collection('locationlist')
+        .add(<String, dynamic>{
+      'text': message,
+      'timestamp': DateTime.now().millisecondsSinceEpoch,
+      'name': FirebaseAuth.instance.currentUser!.displayName,
+      'userId': FirebaseAuth.instance.currentUser!.uid,
+    });
+  }
+
   Future<DocumentReference> addMessageToGuestBook(String message) {
     if (!_loggedIn) {
       throw Exception('Must be logged in');
@@ -114,6 +159,7 @@ class ApplicationState extends ChangeNotifier {
       if (user != null) {
         _loggedIn = true;
         _emailVerified = user.emailVerified;
+
         _guestBookSubscription = FirebaseFirestore.instance
             .collection('guestbook')
             .orderBy('timestamp', descending: true)
@@ -130,6 +176,24 @@ class ApplicationState extends ChangeNotifier {
           }
           notifyListeners();
         });
+
+        _locationListSubscription = FirebaseFirestore.instance
+            .collection('locationlist')
+            .orderBy('timestamp', descending: true)
+            .snapshots()
+            .listen((snapshot) {
+          _locationListMessages = [];
+          for (final document in snapshot.docs) {
+            _locationListMessages.add(
+              LocationListMessage(
+                name: document.data()['name'] as String,
+                message: document.data()['text'] as String,
+              ),
+            );
+          }
+          notifyListeners();
+        });
+
         _attendingSubscription = FirebaseFirestore.instance
             .collection('attendees')
             .doc(user.uid)
@@ -152,6 +216,8 @@ class ApplicationState extends ChangeNotifier {
         _guestBookMessages = [];
         _guestBookSubscription?.cancel();
         _attendingSubscription?.cancel();
+        _locationListMessages = [];
+        _locationListSubscription?.cancel();
       }
       notifyListeners();
     });
