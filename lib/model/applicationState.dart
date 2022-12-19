@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart'
     hide EmailAuthProvider, PhoneAuthProvider;
@@ -7,20 +8,27 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
 //import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:geocode/geocode.dart';
 import 'package:gtk_flutter/firebase_options.dart';
 import 'package:gtk_flutter/model/attending.dart';
 import 'package:gtk_flutter/model/guestBook.dart';
 import 'package:gtk_flutter/model/locationList.dart';
 //import '../firebase_options.dart';
 //import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:gtk_flutter/controller/geoCode.dart';
 
 class ApplicationState extends ChangeNotifier {
   ApplicationState() {
     init();
   }
-  String? latitude;
-  String? longitude;
+  double latitude = 1.0;
+  double longitude = 1.0;
   var _countryName = "Spain";
+
+  void setCountry(latitude, longitude) {
+    this.latitude = latitude;
+    this.longitude = longitude;
+  }
 
 //String setCountry(latitude, longitude) {
 //    countryName = "France";
@@ -29,6 +37,22 @@ class ApplicationState extends ChangeNotifier {
 //
 //    return countryName;
 //  }
+  Future<void> setAddress(double lat, double lang) async {
+    //if (lat == null || lang == null) return "";
+    this.latitude = lat;
+    this.longitude = lang;
+    GeoCode geoCode = GeoCode();
+    // await Future.delayed(const Duration(seconds: 5), () {});
+    Address address =
+        await geoCode.reverseGeocoding(latitude: lat, longitude: lang);
+
+    // return "${address.streetAddress}, ${address.city}, ${address.countryName}, ${address.postal}";
+    // ignore: unnecessary_statements
+    //countryName = " ${address.countryName}";
+    _countryName = " ${address.countryName}";
+    //return " ${address.countryName}";
+    notifyListeners();
+  }
 
   String get getCountry {
     //countryName = "France";

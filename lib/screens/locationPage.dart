@@ -2,14 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 //import 'package:gtk_flutter/model/locationData.dart';
-import 'package:location/location.dart';
-import 'package:geocode/geocode.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 
 import '../model/applicationState.dart';
+//import '../model/locationData.dart';
 import '../model/locationList.dart';
 import '../src/widgets.dart';
+import 'package:gtk_flutter/controller/geoCode.dart';
+import 'package:location/location.dart';
 
 class GetUserLocation extends StatefulWidget {
   const GetUserLocation({
@@ -46,6 +47,11 @@ class _GetUserLocationState extends State<GetUserLocation> {
         .getCurrentLocation(latitude, longitude);
   }
 
+  Future<void> _setAddress(BuildContext context, latitude, longitude) async {
+    Provider.of<ApplicationState>(context, listen: false)
+        .setAddress(latitude, longitude);
+  }
+
   @override
   Widget build(BuildContext context) {
     var address = Provider.of<ApplicationState>(context).getCountry;
@@ -58,14 +64,24 @@ class _GetUserLocationState extends State<GetUserLocation> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              if (currentLocation != null)
-                Text(
-                    "Location: ${currentLocation?.latitude}, ${currentLocation?.longitude}"),
-              if (currentLocation != null) Text("$address"),
               Text("$address"),
               MaterialButton(
-                onPressed: () =>
-                    _getCurrentLocation(context, latitude, longitude)
+                onPressed: () {
+                  getLocation().then((value) async {
+                    LocationData? location = value;
+                    //_getCurrentLocation(
+                    //    context, location?.latitude, location?.longitude);
+                    await _setAddress(
+                        context, location?.latitude, location?.longitude);
+                    widget.addMessage(address);
+                  });
+                  //_getCurrentLocation(context, latitude, longitude);
+                  //await getLocation().then((currentLocation) {
+                  //  //LocationData? location = currentLocation;
+                  //  _getCurrentLocation(context, currentLocation?.latitude,
+                  //      currentLocation?.longitude);
+                  //});
+                }
                 //_getCountry(context);
                 ,
                 //{
@@ -100,47 +116,5 @@ class _GetUserLocationState extends State<GetUserLocation> {
         ),
       ),
     );
-  }
-
-  Future<LocationData?> _getLocation() async {
-    Location location = new Location();
-    LocationData _locationData;
-
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
-
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
-        return null;
-      }
-    }
-
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
-        return null;
-      }
-    }
-
-    _locationData = await location.getLocation();
-
-    return _locationData;
-  }
-
-  Future<String> _getAddress(double? lat, double? lang) async {
-    if (lat == null || lang == null) return "";
-    GeoCode geoCode = GeoCode();
-    // await Future.delayed(const Duration(seconds: 5), () {});
-    Address address =
-        await geoCode.reverseGeocoding(latitude: lat, longitude: lang);
-
-    // return "${address.streetAddress}, ${address.city}, ${address.countryName}, ${address.postal}";
-    // ignore: unnecessary_statements
-    //countryName = " ${address.countryName}";
-
-    return " ${address.countryName}";
   }
 }
