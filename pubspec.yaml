@@ -1,5 +1,5 @@
 name: gtk_flutter
-description: Get to know Firebase with Flutter
+description: Travel The World With Tripify
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -46,6 +46,16 @@ dependencies:
   geocode: ^1.0.2
   geolocator: ^9.0.2
   lottie: ^2.0.0
+  confetti: ^0.7.0
+  intl: ^0.17.0
+  cloud_firestore_odm: ^1.0.0-dev.45
+  json_annotation: ^4.7.0
+  #flutter_map: ^3.1.0
+  syncfusion_flutter_maps: ^20.4.43
+  http: ^0.13.5
+  #mapbox_api: ^1.0.0
+  #flutter_mapbox_navigation: ^0.0.26
+  #mapbox_search: any
 
 dev_dependencies:
   flutter_test:
@@ -57,6 +67,9 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  build_runner: ^2.3.3
+  cloud_firestore_odm_generator: ^1.0.0-dev.45
+  json_serializable: ^6.5.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -69,11 +82,12 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
+  #  - assets/codelab.png
     - assets/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
-  #   - assets/a_dot_burr.jpeg
+  #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
